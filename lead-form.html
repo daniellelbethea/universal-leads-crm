@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lead Intake Form</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body style="padding:2rem;max-width:600px;margin:0 auto;">
+    <h1>Contact Us</h1>
+    <p>Thank you for your interest. Please fill out the form below and we'll be in touch soon.</p>
+    <form id="public-lead-form" class="flex-form" style="flex-direction:column;gap:1rem;">
+        <input type="text" name="name" placeholder="Your name" required />
+        <input type="email" name="email" placeholder="Your email" required />
+        <input type="tel" name="phone" placeholder="Your phone" />
+        <textarea name="message" placeholder="Your message" rows="4"></textarea>
+        <button type="submit" style="align-self:flex-start;">Submit</button>
+    </form>
+    <p id="form-success" style="display:none;color:var(--accent);margin-top:1rem;"></p>
+    <script>
+      (function() {
+        const STORAGE_KEY = 'universalLeadsCRMData';
+        const form = document.getElementById('public-lead-form');
+        const successMsg = document.getElementById('form-success');
+        function generateId() {
+          return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+        function loadData() {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (stored) {
+            try { return JSON.parse(stored); } catch (e) {}
+          }
+          return { leads: [], clients: [], tasks: [], campaigns: [], settings: { stages: ['New','Contacted','Qualified','Proposal','Won','Lost'], scoringRules: [] } };
+        }
+        function computeScore(lead, rules) {
+          let score = 0;
+          const tags = (lead.tags||[]).map(t => t.toLowerCase());
+          const source = (lead.source||'').toLowerCase();
+          rules.forEach(rule => {
+            const name = rule.name.toLowerCase();
+            if (tags.includes(name) || source === name) {
+              score += parseInt(rule.value, 10) || 0;
+            }
+          });
+          return score;
+        }
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const fd = new FormData(form);
+          const name = fd.get('name').trim();
+          const email = fd.get('email').trim();
+          const phone = fd.get('phone').trim();
+          const message = fd.get('message').trim();
+          const data = loadData();
+          const newLead = {
+            id: generateId(),
+            name: name,
+            email: email,
+            phone: phone,
+            status: data.settings.stages[0],
+            source: 'Public Form',
+            tags: [],
+            notes: message
+          };
+          newLead.score = computeScore(newLead, data.settings.scoringRules);
+          data.leads.push(newLead);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          successMsg.textContent = 'Thank you! Your information has been submitted.';
+          successMsg.style.display = 'block';
+          form.reset();
+        });
+      })();
+    </script>
+</body>
+</html>
