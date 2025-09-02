@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Universal Leads CRM</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header class="app-header">
+        <h1>Universal Leads CRM</h1>
+        <nav>
+            <ul class="nav-list">
+                <!-- Clicking these links will swap the visible section in the main area -->
+                <li><a href="#" data-page="dashboard" class="active">Dashboard</a></li>
+                <li><a href="#" data-page="leads">Leads</a></li>
+                <li><a href="#" data-page="pipeline">Pipeline</a></li>
+                <li><a href="#" data-page="clients">Clients</a></li>
+                <li><a href="#" data-page="tasks">Tasks</a></li>
+                <li><a href="#" data-page="campaigns">Campaigns</a></li>
+                <li><a href="#" data-page="settings">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <!-- Dashboard page -->
+        <section id="dashboard" class="page">
+            <h2>Dashboard</h2>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>Total Leads</h3>
+                    <p id="stat-total-leads" class="stat-value">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Clients</h3>
+                    <p id="stat-total-clients" class="stat-value">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Open Tasks</h3>
+                    <p id="stat-open-tasks" class="stat-value">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Running Campaigns</h3>
+                    <p id="stat-running-campaigns" class="stat-value">0</p>
+                </div>
+            </div>
+            <div class="quick-add">
+                <h3>Quick Add Lead</h3>
+                <form id="quick-add-lead-form" class="flex-form">
+                    <input type="text" name="name" placeholder="Name" required />
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="tel" name="phone" placeholder="Phone" />
+                    <button type="submit">Add Lead</button>
+                </form>
+            </div>
+            <div class="dashboard-tasks">
+                <h3>Today's Tasks</h3>
+                <ul id="todays-tasks" class="task-list"></ul>
+            </div>
+        </section>
+
+        <!-- Leads page -->
+        <section id="leads" class="page" hidden>
+            <h2>Leads</h2>
+            <div class="toolbar">
+                <button id="add-lead-btn">+ New Lead</button>
+                <button id="export-leads-btn">Export</button>
+                <label class="import-label">
+                    Import
+                    <input type="file" id="import-leads-input" accept="application/json" hidden />
+                </label>
+                <input type="text" id="lead-search-input" placeholder="Search leads..." />
+                <select id="lead-filter-status">
+                    <option value="">All Statuses</option>
+                </select>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Source</th>
+                        <th>Score</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="leads-table-body"></tbody>
+            </table>
+        </section>
+
+        <!-- Pipeline page -->
+        <section id="pipeline" class="page" hidden>
+            <h2>Pipeline</h2>
+            <div id="pipeline-board" class="pipeline-board"></div>
+        </section>
+
+        <!-- Clients page -->
+        <section id="clients" class="page" hidden>
+            <h2>Clients</h2>
+            <button id="add-client-btn">+ New Client</button>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Contacts</th>
+                        <th>Value</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-table-body"></tbody>
+            </table>
+        </section>
+
+        <!-- Tasks page -->
+        <section id="tasks" class="page" hidden>
+            <h2>Tasks</h2>
+            <button id="add-task-btn">+ New Task</button>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Due Date</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tasks-table-body"></tbody>
+            </table>
+        </section>
+
+        <!-- Campaigns page -->
+        <section id="campaigns" class="page" hidden>
+            <h2>Campaigns</h2>
+            <button id="add-campaign-btn">+ New Campaign</button>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Steps</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="campaigns-table-body"></tbody>
+            </table>
+        </section>
+
+        <!-- Settings page -->
+        <section id="settings" class="page" hidden>
+            <h2>Settings</h2>
+            <div class="settings-section">
+                <h3>Pipeline Stages</h3>
+                <ul id="stage-list" class="editable-list"></ul>
+                <form id="add-stage-form" class="inline-form">
+                    <input type="text" id="new-stage-name" placeholder="Add stage" />
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+            <div class="settings-section">
+                <h3>Lead Scoring Rules</h3>
+                <ul id="scoring-rules-list" class="editable-list"></ul>
+                <form id="add-scoring-rule-form" class="scoring-form">
+                    <input type="text" id="new-rule-name" placeholder="Criteria (e.g. referral)" />
+                    <input type="number" id="new-rule-value" placeholder="Points" />
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <div id="modal-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>
